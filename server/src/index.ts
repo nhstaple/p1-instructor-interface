@@ -1,7 +1,6 @@
 import express from 'express'
 import * as r from 'rethinkdb'
 import multer from 'multer'
-import Axios, { AxiosResponse } from 'axios'
 import { join } from 'path'
 import { ICollection, ICollection_lw, IVocab, IUser, ELanguage } from "./interfaces"
 import { connect } from 'http2'
