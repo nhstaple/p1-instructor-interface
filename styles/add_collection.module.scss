@@ -24,9 +24,9 @@
 #submitRow {
   height: 16vh;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  padding-right: 50px;
+  padding: 0 50px;
 
   > button {
     background-color: #32abff;

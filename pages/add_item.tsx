@@ -33,28 +33,32 @@ const add_item = () => {
     //  FROM A1
     // const form = new FormData()
     // form.append("language", language)
-    // form.append("word", word)
+    // form.append("value", word)
     // form.append("translation", translation)
     // form.append("example", example)
     // form.append("imageDesc", imageDesc)
     // form.append("image", image as Blob)
     // form.append("pronunciation", pronunciation as Blob)
 
-    // const response = await axios.post("http://localhost:4000/add_item", form)
+    // const response = await axios.post("http://localhost:4000/insert_cloud_item", form)
     // console.log(response.data)
+
+    // add data
+    const newItem: IVocab = {
+      lang: language,
+      translation: translation,
+      value: word,
+      id: "" // assigned on server
+    }
+
+    const response = await axios.post("http://localhost:4000/insert_vocab_item", newItem)
+    console.log(response.data)
+    newItem.id = response.data.id as string
 
     // check for query param, this means that we came from the add collections
     // page and we want to add to the current collection instead of just
     // creating a new vocab word
-    if (router.query.append === "true") {
-      // add data
-      const newItem: IVocab = {
-        lang: language,
-        translation: translation,
-        value: word,
-        id: "" // assigned on server
-      }
-
+    if (router.query.append === "true" || router.query.edit === "true") {
       // get cached data if any
       const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
       console.log(data)
@@ -69,8 +73,12 @@ const add_item = () => {
       localStorage.setItem("state", JSON.stringify(data))
 
       // go back to add collection page
-      // router.push("/add_collection")
-      router.back()
+      if (router.query.append) {
+        router.push("/add_collection?append=true")
+      } else {
+        router.back()
+      }
+      // router.back()
     }
 
     // console.log("submitted")

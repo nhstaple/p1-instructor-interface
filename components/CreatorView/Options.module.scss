@@ -7,12 +7,18 @@
   width: 80%;
   max-width: 1000px;
   padding: 40px;
+
+  > a {
+    text-decoration: none;
+  }
 }
 
 .box {
   flex: 1 0 30%;
   text-align: center;
   background-color: #99D5FF;
+  color: black;
+  padding: 50px;
   // overflow-y: scroll;
   max-height: 300px;
 

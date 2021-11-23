@@ -7,6 +7,5 @@
  * @readonly uuid {string} a unique ID
  */
 export interface ITractable {
-    // remove readonly for now
-    id:string;
+    readonly id:string;
 }

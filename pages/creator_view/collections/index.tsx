@@ -9,18 +9,19 @@ import CollectionsList from '@components/CreatorView/CollectionsView/Collections
 
 export const getStaticProps = async () => {
   let response: AxiosResponse
-  let data: ICollection[]
+  let collections: ICollection[]
   try {
-    response = await Axios.get("/get_all_collections")
-    data = response.data as ICollection[]
+    response = await Axios.get("http://localhost:4000/get_all_collections")
+    console.log(response)
+    collections = response.data as ICollection[]
   } catch (err) {
-    // console.log(err)
-    data = [sample, sample2]
+    console.log(err)
+    collections = [sample, sample2]
   }
 
   return {
     props: {
-      collections: data
+      collections
     }
   }
 }

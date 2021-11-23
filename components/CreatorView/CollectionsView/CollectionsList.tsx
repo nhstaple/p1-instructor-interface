@@ -11,7 +11,7 @@ interface Props {
 
 const Item = (item: IVocab) => {
   return (
-    <div className={styles.item}>
+    <div className={styles.item} key={item.value}>
       <h3>{item.value}</h3>
       <h4>{item.translation}</h4>
     </div>
@@ -29,7 +29,8 @@ const Collection = (col: ICollection) => {
       authorName: col.author.name,
       authorEmail: col.author.email.address,
       items: col.items,
-      description: col.description
+      description: col.description,
+      id: col.id ?? undefined
     }
     localStorage.setItem("state", JSON.stringify(data))
 
@@ -42,10 +43,10 @@ const Collection = (col: ICollection) => {
         <div>
           <h2>{col.name}</h2>
           <br />
-          <Link href={`/creator_view/collections/${col.id}`}>
+          {/* <Link href={`/creator_view/collections/${col.id}`}>
             <a><button>View</button></a>
-          </Link>
-          <a><button onClick={handleClick}>Edit</button></a>
+          </Link> */}
+          <a><button onClick={handleClick}>Edit Collection</button></a>
         </div>
         <div>
           {col.items.map(Item)}
@@ -56,10 +57,15 @@ const Collection = (col: ICollection) => {
 }
 
 const CollectionsList = ({ collections }: Props) => {
+  const router = useRouter()
+
   return (
-    <ul id={styles.container}>
-      {collections.map(Collection)}
-    </ul>
+    <div id={styles.container}>
+      <button onClick={() => router.push("/creator_view")}>back</button>
+      <ul id={styles.list}>
+        {collections.map(Collection)}
+      </ul>
+    </div>
   )
 }
 

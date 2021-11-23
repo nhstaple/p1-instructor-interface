@@ -15,7 +15,7 @@ import { useRouter } from 'next/router'
 
 const add_collection = () => {
   const router = useRouter()
-  const [lang, setLang] = useState<ELanguage>()
+  const [lang, setLang] = useState<ELanguage | undefined>()
   const [name, setName] = useState<string>("")
   const [authorName, setAuthorName] = useState<string>("")
   const [authorEmail, setAuthorEmail] = useState<string>("")
@@ -25,14 +25,14 @@ const add_collection = () => {
   // if form complete, send all necessary info to server
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     // form not complete, leave
-    if (!name || !authorName || !authorEmail || !lang || !items || !description) return
+    if (!name || !authorName || !authorEmail || !lang || !items || items.length === 0 || !description) return
 
     const collection: ICollection = {
       author: {
         email: {
-          address: authorEmail
+          address: ""
         },
-        name: authorName,
+        name: "",
         rank: 3, // default to creator for now
         id: "" // ID will get assigned on server
       },
@@ -40,16 +40,16 @@ const add_collection = () => {
       items,
       lang,
       name,
-      id: "", // ID will get assigned on server
+      id: router.query.collection as string ?? "", // ID will get assigned on server
     }
 
     try {
       // this won't work until the backend is implemented
       let response: AxiosResponse
       if (router.query.edit === "true") {
-        response = await axios.post(`/edit_collection/${collection.id}`, collection)
+        response = await axios.put(`http://localhost:4000/update/collections/${router.query.collection}`, collection)
       } else {
-        response = await axios.post("/insert_collection", collection)
+        response = await axios.post("http://localhost:4000/insert_collection", collection)
       }
       console.log(response)
     } catch (err) {
@@ -70,7 +70,12 @@ const add_collection = () => {
   // check if any cached data already since we may be coming back from the add
   // items page, then set state of all fields so that they are pre-filled
   useEffect(() => {
+    // if (Object.keys(router.query).length === 0) {
+    //   console.log("clearing")
+    //   localStorage.clear()
+    // }
     const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
+    // console.log(data)
     if (data.name) setName(data.name)
     if (data.lang) setLang(data.lang)
     if (data.authorName) setAuthorName(data.authorName)
@@ -82,6 +87,7 @@ const add_collection = () => {
   // update cached data with field values
   useEffect(() => {
     const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
+    console.log(data)
     data.name = name ?? undefined
     data.lang = lang ?? undefined
     data.authorName = authorName ?? undefined
@@ -109,6 +115,7 @@ const add_collection = () => {
       <hr />
       <CurrentCollectionItems items={items} setItems={setItems} />
       <div id={styles.submitRow}>
+        <button onClick={() => router.push("/creator_view")}>back</button>
         <button onClick={handleSubmit}>Finish Collection Creation</button>
       </div>
     </main>
