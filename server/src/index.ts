@@ -122,7 +122,8 @@ app.on("ready", () => {
       id: await createUUID(uuidName), // CREATE UUID
       lang: req.body.lang,
       translation: req.body.translation,
-      value: req.body.value
+      value: req.body.value,
+      s3Key: req.body.s3Key
     }
 
     // rdb command
@@ -193,14 +194,23 @@ app.on("ready", () => {
     // For attribute: send in params like {"value": "newVal", "lang": "newlang"} comma-spaced k,v pair.
     // SOURCE: https://rethinkdb.com/api/javascript/update
     // console.log(req.body)
-    let items = req.body.items as IVocab[]
-    let attribute: Record<string, unknown> = { items: items.map(item => item.id) }// get all attributes from request
+    let attribute: Record<string, unknown>
+    if (tableName === "collections") {
+      let items = req.body.items as IVocab[]
+      attribute = { items: items.map(item => item.id) }// get all attributes from request
+    }
+    if (tableName === "vocab_items") {
+      attribute = req.body
+    }
     // rdb command
     let result: r.WriteResult
     try {
-      result = await r.db('a3').table(tableName).get(uuid).update(attribute).run(connection)
+      result = await r.db('a3').table(tableName).get(uuid).update(attribute!).run(connection)
       console.log(result)
-      res.send("Success!")
+      res.send({
+        message: "Success!",
+        id: uuid
+      })
     } catch (err) {
       console.log("update failed:", err)
       res.send("failed to update item/collection")

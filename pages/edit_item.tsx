@@ -30,62 +30,67 @@ const add_item = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    // FROM A1
-    const form = new FormData()
+    //  FROM A1
+    // const form = new FormData()
     // form.append("language", language)
-    form.append("value", word)
+    // form.append("value", word)
     // form.append("translation", translation)
     // form.append("example", example)
-    form.append("imageDesc", imageDesc)
-    form.append("image", image as Blob)
-    form.append("pronunciation", pronunciation as Blob)
+    // form.append("imageDesc", imageDesc)
+    // form.append("image", image as Blob)
+    // form.append("pronunciation", pronunciation as Blob)
 
-    const formResponse = await axios.post("http://localhost:4000/insert_cloud_item", form)
-    console.log(formResponse.data)
-
-    const key = formResponse.data.id
+    // const response = await axios.post("http://localhost:4000/insert_cloud_item", form)
+    // console.log(response.data)
 
     // add data
     const newItem: IVocab = {
       lang: language!,
       translation: translation,
       value: word,
-      s3Key: key,
-      id: "" // assigned on server
+      id: router.query.id as string // assigned on server
     }
 
-    const response = await axios.post("http://localhost:4000/insert_vocab_item", newItem)
+    const response = await axios.put(`http://localhost:4000/update/vocab_items/${router.query.id}`, newItem)
     console.log(response.data)
     newItem.id = response.data.id as string
+    console.log(newItem)
 
-    // check for query param, this means that we came from the add collections
-    // page and we want to add to the current collection instead of just
-    // creating a new vocab word
-    if (router.query.append === "true" || router.query.edit === "true") {
-      // get cached data if any
-      const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
-      console.log(data)
+    // get cached data if any
+    const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
+    console.log(data)
 
-      if (data.items) {
-        data.items.push(newItem)
-      } else {
-        data.items = [newItem]
-      }
-
-      // update cached data with newly added vocab
-      localStorage.setItem("state", JSON.stringify(data))
-
-      // go back to add collection page
-      if (router.query.append) {
-        router.push("/add_collection?append=true")
-      } else {
-        router.back()
-      }
-      // router.back()
+    if (data.items) {
+      const idx = data.items.findIndex((item: IVocab) => item.id === newItem.id)
+      console.log({ idx })
+      data.items[idx] = newItem
+    } else {
+      data.items = [newItem]
     }
 
-    // console.log("submitted")
+    // update cached data with newly added vocab
+    localStorage.setItem("state", JSON.stringify(data))
+
+    // go back to add collection page
+    router.back()
   }
+
+  useEffect(() => {
+    if (!router.isReady) return
+    async function getVocab() {
+      const curr = await axios.get(`http://localhost:4000/get_vocab_item/${router.query.id}`)
+      const data: IVocab = curr.data
+      console.log(data.value)
+      setLanguage(data.lang)
+      setWord(data.value)
+      setTranslation(data.translation)
+    }
+    getVocab()
+  }, [router.isReady])
+
+  useEffect(() => {
+    console.log(word)
+  }, [word])
 
   return (
     <>
@@ -96,7 +101,7 @@ const add_item = () => {
             <CardsSection />
           </div>
           <div id={styles.column2}>
-            <WordInput word={word} language={language} translation={translation} setWord={setWord} setTranslation={setTranslation} />
+            <WordInput word={word} language={language} setWord={setWord} translation={translation} setTranslation={setTranslation} />
             <SoundFileUpload setPronunciation={setPronunciation} />
             <Notes />
           </div>

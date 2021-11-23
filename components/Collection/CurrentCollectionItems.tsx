@@ -16,8 +16,12 @@ const CurrentCollectionItems = ({ items, setItems }: Props) => {
   const handleRemove = async (id: string) => {
     console.log(id)
     const newItems = items!.filter(item => item.id !== id)
-    await Axios.delete(`http://localhost:4000/delete/vocab_items/${id}`)
+    // await Axios.delete(`http://localhost:4000/delete/vocab_items/${id}`)
     setItems(newItems)
+  }
+
+  const handleEdit = (id: string) => {
+    router.push(`/edit_item?id=${id}`)
   }
 
   const Card = (item: IVocab) => {
@@ -26,7 +30,7 @@ const CurrentCollectionItems = ({ items, setItems }: Props) => {
         <h3>{item.value}</h3>
         <h3>{item.translation}</h3>
         <button onClick={async () => await handleRemove(item.id)}>REMOVE</button>
-        <button>EDIT</button>
+        <button onClick={() => handleEdit(item.id)}>EDIT</button>
       </article>
     )
   }

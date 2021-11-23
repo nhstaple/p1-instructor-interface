@@ -18,8 +18,9 @@ const AddOrCreateItem = ({lang}: Props) => {
     if (!lang && lang !== 0) return
     if (router.query.edit === "true") {
       setLink(`/add_item?edit=true&lang=${lang}`)
-    }
-    if (router.query.append === "true") {
+    } else if (router.query.append === "true") {
+      setLink(`/add_item?append=true&lang=${lang}`)
+    } else {
       setLink(`/add_item?append=true&lang=${lang}`)
     }
   }, [router.isReady, lang])
