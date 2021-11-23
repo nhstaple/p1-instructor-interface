@@ -13,12 +13,12 @@ import { FormEvent, useState, useEffect } from "react"
 import { useRouter } from 'next/router'
 import axios from 'axios'
 
-import { ELanguage } from "../interfaces"
+import { ELanguage } from "../interfaces/assets/languages"
 import { IVocab } from "../interfaces"
 
 const add_item = () => {
   const router = useRouter()
-  const [language, setLanguage] = useState("")
+  const [language, setLanguage] = useState<ELanguage>()
   const [word, setWord] = useState("")
   const [translation, setTranslation] = useState("")
   const [example, setExample] = useState("")
@@ -45,7 +45,7 @@ const add_item = () => {
 
     // add data
     const newItem: IVocab = {
-      lang: language,
+      lang: language!,
       translation: translation,
       value: word,
       id: "" // assigned on server
@@ -89,11 +89,11 @@ const add_item = () => {
       <form onSubmit={handleSubmit}>
         <div id={styles.container}>
           <div id={styles.column1}>
-            <LanguageSelect setLanguage={setLanguage} />
+            <LanguageSelect language={language} setLanguage={setLanguage} />
             <CardsSection />
           </div>
           <div id={styles.column2}>
-            <WordInput setWord={setWord} setTranslation={setTranslation} />
+            <WordInput language={language} setWord={setWord} setTranslation={setTranslation} />
             <SoundFileUpload setPronunciation={setPronunciation} />
             <Notes />
           </div>

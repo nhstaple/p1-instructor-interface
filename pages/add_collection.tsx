@@ -109,7 +109,7 @@ const add_collection = () => {
       </div>
       <hr />
       <div id={styles.row2}>
-        <AddOrCreateItem />
+        <AddOrCreateItem lang={lang} />
         <Description description={description} setDescription={setDescription} />
       </div>
       <hr />
