@@ -1,7 +1,4 @@
-# a3-collection-prototype
-
-As of now this prototype does not properly make calls to the server.
-
+# a4-prototype-interface-deploy-preparation
 
 
 ## How to run locally
@@ -12,12 +9,20 @@ As of now this prototype does not properly make calls to the server.
 
 ### Steps
 
+* make sure RethinkDB is running
 * clone respository
+
+#### Front-end
 * cd into root folder
 * `yarn` or `npm install` to install dependencies
 * `yarn dev` or `npm run dev` to start the app in dev mode
 * visit http://localhost:3000 in browser
 
+#### Back-end
+* cd into server folder
+* `yarn` or `npm install` to install dependencies
+* `yarn dev` or `npm run dev` to start the app in dev mode
+* visit http://localhost:4000/createall to initialize database
 
 
 ## Brief Run-through
@@ -36,4 +41,9 @@ As of now this prototype does not properly make calls to the server.
 * click edit to edit a collection
 * takes user back to add collection page with pre-populated data
 * user can make changes then resubmit the collection with updates
+
+### Editing vocab items
+
+* when editing/creating a collection, click edit on any existing vocab item in the collection
+* make any changes and submit
 
