@@ -3,7 +3,6 @@ import * as r from 'rethinkdb'
 import multer from 'multer'
 import { join } from 'path'
 import { ICollection, ICollection_lw, IVocab, IUser, ELanguage } from "./interfaces"
-import { connect } from 'http2'
 import cors from 'cors'
 
 // only because items are stored in DB as string[] and not IVocab[]

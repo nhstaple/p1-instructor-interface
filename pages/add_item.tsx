@@ -30,7 +30,7 @@ const add_item = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    // FROM A1
+    // create formdata to send image and sound files
     const form = new FormData()
     // form.append("language", language)
     form.append("value", word)
@@ -40,12 +40,14 @@ const add_item = () => {
     form.append("image", image as Blob)
     form.append("pronunciation", pronunciation as Blob)
 
+    // send image/sound data to server
     const formResponse = await axios.post("http://localhost:4000/insert_cloud_item", form)
     console.log(formResponse.data)
 
+    // get s3Key for further use
     const key = formResponse.data.id
 
-    // add data
+    // add vocab item data
     const newItem: IVocab = {
       lang: language!,
       translation: translation,
@@ -54,6 +56,7 @@ const add_item = () => {
       id: "" // assigned on server
     }
 
+    // send vocab item to server
     const response = await axios.post("http://localhost:4000/insert_vocab_item", newItem)
     console.log(response.data)
     newItem.id = response.data.id as string
@@ -81,10 +84,7 @@ const add_item = () => {
       } else {
         router.back()
       }
-      // router.back()
     }
-
-    // console.log("submitted")
   }
 
   return (

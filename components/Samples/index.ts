@@ -16,13 +16,13 @@ export const sample: ICollection = {
   items: [
     {
       id: "a1",
-      lang: "Spanish",
+      lang: 1,
       translation: "cat",
       value: "el gato"
     },
     {
       id: "a2",
-      lang: "Spanish",
+      lang: 1,
       translation: "dog",
       value: "el perro"
     }
@@ -45,13 +45,13 @@ export const sample2: ICollection = {
   items: [
     {
       id: "b1",
-      lang: "Spanish",
+      lang: 1,
       translation: "table",
       value: "la mesa"
     },
     {
       id: "b2",
-      lang: "Spanish",
+      lang: 1,
       translation: "pencil",
       value: "el lápiz"
     }

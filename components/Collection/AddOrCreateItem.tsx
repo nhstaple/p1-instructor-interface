@@ -27,8 +27,6 @@ const AddOrCreateItem = ({lang}: Props) => {
 
   return (
     <section id={styles.container}>
-      {/* not sure if adding existing item functionality is needed */}
-      {/* <button>Add an Existing Item</button> */}
       <Link href={link}>
         <button>Create a new Item</button>
       </Link>

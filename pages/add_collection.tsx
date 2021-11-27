@@ -25,8 +25,10 @@ const add_collection = () => {
   // if form complete, send all necessary info to server
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     // form not complete, leave
+    // TODO: front-end should prompt user to finish filling out form
     if (!name || !authorName || !authorEmail || !lang || !items || items.length === 0 || !description) return
 
+    // create collection object to send to server
     const collection: ICollection = {
       author: {
         email: {
@@ -40,9 +42,13 @@ const add_collection = () => {
       items,
       lang,
       name,
-      id: router.query.collection as string ?? "", // ID will get assigned on server
+      // ID gets assigned on server if this is a new collection, otherwise
+      // the existing collection ID should be in the query params
+      id: router.query.collection as string ?? "", 
     }
 
+    // create a new collection on server or update existing collection based on
+    // query params
     try {
       // this won't work until the backend is implemented
       let response: AxiosResponse
@@ -54,7 +60,7 @@ const add_collection = () => {
       console.log(response)
     } catch (err) {
       console.log(err)
-      // return
+      return
     }
     
     // clear all data on browser now that collection is submitted
@@ -71,12 +77,7 @@ const add_collection = () => {
   // check if any cached data already since we may be coming back from the add
   // items page, then set state of all fields so that they are pre-filled
   useEffect(() => {
-    // if (Object.keys(router.query).length === 0) {
-    //   console.log("clearing")
-    //   localStorage.clear()
-    // }
     const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
-    // console.log(data)
     if (data.name) setName(data.name)
     if (data.lang) setLang(data.lang)
     if (data.authorName) setAuthorName(data.authorName)
@@ -85,7 +86,7 @@ const add_collection = () => {
     if (data.description) setDescription(data.description)
   }, [])
 
-  // update cached data with field values
+  // update cached data with field values if changed
   useEffect(() => {
     const data = localStorage.getItem("state") ? JSON.parse(localStorage.getItem("state")!) : {}
     console.log(data)

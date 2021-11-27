@@ -30,7 +30,7 @@ const add_item = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    //  FROM A1
+    // TODO: add functionality for editing sound and images?
     // const form = new FormData()
     // form.append("language", language)
     // form.append("value", word)
@@ -51,6 +51,7 @@ const add_item = () => {
       id: router.query.id as string // assigned on server
     }
 
+    // make edit request to server
     const response = await axios.put(`http://localhost:4000/update/vocab_items/${router.query.id}`, newItem)
     console.log(response.data)
     newItem.id = response.data.id as string
@@ -75,6 +76,7 @@ const add_item = () => {
     router.back()
   }
 
+  // query the vocab item on server then fill out existing data on front-end
   useEffect(() => {
     if (!router.isReady) return
     async function getVocab() {
@@ -88,9 +90,9 @@ const add_item = () => {
     getVocab()
   }, [router.isReady])
 
-  useEffect(() => {
-    console.log(word)
-  }, [word])
+  // useEffect(() => {
+  //   console.log(word)
+  // }, [word])
 
   return (
     <>
