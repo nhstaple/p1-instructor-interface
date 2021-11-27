@@ -54,10 +54,10 @@ const add_collection = () => {
       console.log(response)
     } catch (err) {
       console.log(err)
+      // return
     }
     
     // clear all data on browser now that collection is submitted
-    router.replace("/add_collection")
     localStorage.clear()
     setAuthorEmail("")
     setAuthorName("")
@@ -65,6 +65,7 @@ const add_collection = () => {
     setItems(undefined)
     setLang(undefined)
     setName("")
+    router.push("/creator_view")
   }
   
   // check if any cached data already since we may be coming back from the add
