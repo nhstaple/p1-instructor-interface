@@ -16,6 +16,8 @@ import axios from 'axios'
 import { ELanguage } from "../interfaces/assets/languages"
 import { IVocab } from "../interfaces"
 
+const serverAddress = 'localhost' // "173.1.1.2"
+
 const add_item = () => {
   const router = useRouter()
   const [language, setLanguage] = useState<ELanguage>()
@@ -52,7 +54,7 @@ const add_item = () => {
     }
 
     // make edit request to server
-    const response = await axios.put(`http://localhost:4000/update/vocab_items/${router.query.id}`, newItem)
+    const response = await axios.put(`http://${serverAddress}:4000/update/vocab_items/${router.query.id}`, newItem)
     console.log(response.data)
     newItem.id = response.data.id as string
     console.log(newItem)

@@ -5,6 +5,15 @@ import { join } from 'path'
 import { ICollection, ICollection_lw, IVocab, IUser, ELanguage } from "./interfaces"
 import cors from 'cors'
 
+import dotenv from 'dotenv'
+dotenv.config()
+
+const serverAddress:any = 'localhost' // process.env.SERVER_ADDRESS
+const serverPort:any = process.env.SERVER_PORT
+
+const dbAddress:any = process.env.DB_ADDRESS
+const dbPort:any = process.env.DB_DRIVER_PORT
+
 // only because items are stored in DB as string[] and not IVocab[]
 interface ICollectionAlt {
   readonly id: string;
@@ -15,7 +24,6 @@ interface ICollectionAlt {
   items: string[] | IVocab[];
 }
 
-const port = 4000
 const app = express()
 const upload = multer()
 
@@ -60,10 +68,13 @@ async function createUUID(name: string): Promise<string> {
 }
 
 app.on("ready", () => {
+  console.log('app.on.ready')
+
   // Available API Requests:
   // NOTE: create a3 database & vocab_items table, collections table in RDB dashboard first. (use helper API calls listed at the end!)
   // NOTE: We're using primary key (UUID) to retreive row entries...
 
+  try {
   // [POST] New CloudItem (Sound/Image)
   // NOTE: separated from vocab_item for convenice, this can later merge with that method.
   app.post("/insert_cloud_item", upload.fields(fields), async (req, res) => {
@@ -110,6 +121,10 @@ app.on("ready", () => {
     //   }
     // });
   })
+  } catch(err) {
+    console.log('insert_cloud_item error!')
+    console.log(err)
+  }
 
   // [POST] New VocabItem
   app.post("/insert_vocab_item", async (req, res) => {
@@ -379,26 +394,63 @@ app.on("ready", () => {
     });
   })
 
+  app.get("/initDB", async (req, res) => {
+    try {
+      r.dbList().run(connection, (err, data) => {
+        if(err) {
+          console.log(err)
+        } else {
+          if(!data.includes('a3')) {
+            r.dbCreate('a3').run(connection, (err, result) => {
+              if(err) {
+                console.log(err)
+              } else {
+                console.log(result)
+              }
+            })
+            console.log('Created database "a3"!')
+          } else {
+            console.log('database "a3" exists!')
+          }
+        }
+      })
+    }
+    catch (err) {
+      console.log('There was an error on db initialization')
+      console.log(err)
+    }
+  })
+
+  app.get('/status', async(req, res) => {
+    console.log('reachable')
+    res.send('reachable')
+  })
+
   // SHORTCUT LINK; 
   // http://localhost:4000/createALL
   app.get("/createALL", async (req, res) => {
+    r.dbList().run(connection, (err, data) => {
+      console.log('current databases in rdb')
+      console.log(data)
+    })
+
     r.db('a3').tableCreate('collections').run(connection, (err, data) => {
       if (err) {
-        console.log("Failed...")
+        console.log("Failed to create a3.collections")
       } else {
         console.log("Successfully created collections table!")
       }
     });
     r.db('a3').tableCreate('vocab_items').run(connection, (err, data) => {
       if (err) {
-        console.log("Failed...")
+        console.log("Failed to create a3.vocab_items")
       } else {
         console.log("Successfully created vocab_items table!")
       }
     });
     r.db('a3').tableCreate('cloud_items').run(connection, (err, data) => {
       if (err) {
-        console.log("Failed...")
+        console.log("Failed to create a3.cloud_items")
       } else {
         console.log("Successfully created cloud_items table!")
       }
@@ -409,18 +461,24 @@ app.on("ready", () => {
   //   res.sendFile(join(__dirname, "..", "..", "build", "index.html"))
   // })
 
-  app.listen(port, async () => {
-    console.log("listening on port " + port)
+  try {
+  app.listen(serverPort, serverAddress, async () => {
+    console.log("listening at " + serverAddress + ':' + serverPort)
   })
+  } catch(err) {
+    console.log('fatal error on app.listen')
+    console.log(err)
+  }
 })
 
 let connection: r.Connection
-r.connect({ host: "localhost", port: 28015 }, (err, conn) => {
+r.connect({ host: dbAddress, port: dbPort }, (err, conn) => {
   if (err) {
     console.log(err)
     throw err
+  } else {
+    connection = conn
+    console.log("connected to rethinkDB!")
+    app.emit("ready")
   }
-  connection = conn
-  console.log("connected to rethinkDB!")
-  app.emit("ready")
 })

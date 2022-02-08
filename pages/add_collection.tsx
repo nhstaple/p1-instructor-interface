@@ -13,6 +13,12 @@ import { useState, useEffect, MouseEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 
+import dotenv from 'dotenv'
+dotenv.config()
+
+const serverAddress = process.env.SERVER_ADDRESS
+const serverPort = process.env.SERVER_PORT
+
 const add_collection = () => {
   const router = useRouter()
   const [lang, setLang] = useState<ELanguage | undefined>()
@@ -53,9 +59,9 @@ const add_collection = () => {
       // this won't work until the backend is implemented
       let response: AxiosResponse
       if (router.query.edit === "true") {
-        response = await axios.put(`http://localhost:4000/update/collections/${router.query.collection}`, collection)
+        response = await axios.put(`http://${serverAddress}:${serverPort}/update/collections/${router.query.collection}`, collection)
       } else {
-        response = await axios.post("http://localhost:4000/insert_collection", collection)
+        response = await axios.post(`http://${serverAddress}:${serverPort}/insert_collection`, collection)
       }
       console.log(response)
     } catch (err) {

@@ -1,0 +1,19 @@
+# specify the version of NodeJS
+FROM node:12
+
+RUN echo "building client (Dockerfile-client)"
+
+# specify the working directory in the docker image
+WORKDIR /usr/src/ev-creator-proto
+
+# bundle the source code from this repo into the docker image
+COPY . .
+
+# frontend
+RUN yarn
+
+# the port being exposed publicly
+EXPOSE 3000
+
+CMD [ "yarn", "dev" ]
+

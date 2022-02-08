@@ -16,6 +16,8 @@ import axios from 'axios'
 import { ELanguage } from "../interfaces/assets/languages"
 import { IVocab } from "../interfaces"
 
+const serverAddress = 'localhost' // "173.1.1.2"
+
 const add_item = () => {
   const router = useRouter()
   const [language, setLanguage] = useState<ELanguage>()
@@ -41,7 +43,7 @@ const add_item = () => {
     form.append("pronunciation", pronunciation as Blob)
 
     // send image/sound data to server
-    const formResponse = await axios.post("http://localhost:4000/insert_cloud_item", form)
+    const formResponse = await axios.post("http://" + serverAddress + ":4000/insert_cloud_item", form)
     console.log(formResponse.data)
 
     // get s3Key for further use
@@ -57,7 +59,7 @@ const add_item = () => {
     }
 
     // send vocab item to server
-    const response = await axios.post("http://localhost:4000/insert_vocab_item", newItem)
+    const response = await axios.post("http://" + serverAddress + ":4000/insert_vocab_item", newItem)
     console.log(response.data)
     newItem.id = response.data.id as string
 

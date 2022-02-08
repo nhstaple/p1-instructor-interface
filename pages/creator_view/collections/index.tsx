@@ -7,11 +7,17 @@ import { sample, sample2 } from '@components/Samples'
 
 import CollectionsList from '@components/CreatorView/CollectionsView/CollectionsList'
 
+import dotenv from 'dotenv'
+dotenv.config()
+
+const serverAddress = process.env.SERVER_ADDRESS
+const serverPort = process.env.SERVER_PORT
+
 export const getStaticProps = async () => {
   let response: AxiosResponse
   let collections: ICollection[]
   try {
-    response = await Axios.get("http://localhost:4000/get_all_collections")
+    response = await Axios.get(`http://${serverAddress}:${serverPort}/get_all_collections`)
     console.log(response)
     collections = response.data as ICollection[]
   } catch (err) {

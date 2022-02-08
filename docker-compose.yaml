@@ -1,0 +1,61 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile-client
+        
+    image: app:tag
+
+    command: sh -c "yarn && yarn run dev"
+    
+    ports:
+      - "3000:3000"
+
+    env_file: ./.env
+    
+    working_dir: /usr/src/ev-creator-proto
+    
+    volumes:
+      - ./:/ev-creator-proto
+    
+    depends_on:
+      - rdb
+      - server
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile-server
+    image: server:tag
+    command: sh -c "yarn && yarn run dev"
+    
+    ports:
+      - "4000:4000"
+
+    env_file: ./.env
+
+    working_dir: /usr/src/ev-creator-proto/server
+    
+    volumes:
+      - ./:/ev-creator-proto
+    
+    depends_on:
+      - rdb
+
+  rdb:
+    image: rethinkdb:latest
+    
+    command: sh -c "rethinkdb --bind all"
+    
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+      - "28015:28015"
+    
+    volumes:
+      - ./:/ev-creator-proto
+
+volumes:
+  ev-creator-proto:
