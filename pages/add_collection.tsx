@@ -13,11 +13,8 @@ import { useState, useEffect, MouseEvent } from 'react'
 import axios, { AxiosResponse } from 'axios'
 import { useRouter } from 'next/router'
 
-import dotenv from 'dotenv'
-dotenv.config()
-
-const serverAddress = process.env.SERVER_ADDRESS
-const serverPort = process.env.SERVER_PORT
+const serverAddress = 'localhost'
+const serverPort = 4000
 
 const add_collection = () => {
   const router = useRouter()

@@ -7,11 +7,8 @@ import { sample, sample2 } from '@components/Samples'
 
 import CollectionsList from '@components/CreatorView/CollectionsView/CollectionsList'
 
-import dotenv from 'dotenv'
-dotenv.config()
-
-const serverAddress = process.env.SERVER_ADDRESS
-const serverPort = process.env.SERVER_PORT
+const serverAddress = 'localhost'
+const serverPort = 4000
 
 export const getStaticProps = async () => {
   let response: AxiosResponse

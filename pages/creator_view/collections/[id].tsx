@@ -13,7 +13,8 @@ export const getStaticPaths = async () => {
     data = response.data
   } catch (err) {
     // for testing without backend
-    // console.log(err)
+    console.log('there was an axious error!')
+    console.log(err)
     data = [sample, sample2]
   }
 
